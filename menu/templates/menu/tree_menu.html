@@ -1,1 +1,10 @@
-{{ menu }}
+{{ menu.menu }}<br><br><br>
+{{ menu.parent }}<br><br><br>
+{{ menu.child }}<br><br><br>
+{{ menu.result }}<br><br><br>
+
+{% for data in menu.result.child_objects %}
+    {{ data.current_object.title }}<br><br><br>
+    {{ data.child_objects }}<br><br><br>
+
+{% endfor %}
