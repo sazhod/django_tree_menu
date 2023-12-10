@@ -5,46 +5,59 @@ from menu.models import Menu, MenuItem
 register = template.Library()
 
 
-def rec_func(current, childs):
+def get_full_tree_menu(current: MenuItem, children: list) -> dict:
+    """
+    Рекурсивная функция, которая позволяет отсортировать все MenuItem
+    :param current: Текущий MenuItem
+    :param children: Список всех MenuItem
+    :return: data: dict {
+        'current_object': current,
+        'children_objects': [...]
+    }
+    """
+    # print(type(current), type(children))
     data = {
         'current_object': current,
-        'child_objects': []
+        'children_objects': []
     }
-    if childs is None or len(childs) == 0:
+    if children is None or not children:
+        del data['children_objects']
         return data
-    for i in range(len(childs)-1, -1, -1):
-        if childs[i].parent_menu_item == current:
-            new_current = childs[i]
-            childs.remove(childs[i])
-            data['child_objects'].append(rec_func(new_current, childs[:]))
+    for i in range(len(children) - 1, -1, -1):
+        if children[i].parent_menu_item == current:
+            new_current = children[i]
+            children.remove(children[i])
+            data['children_objects'].append(get_full_tree_menu(new_current, children))
+    if not data['children_objects']:
+        del data['children_objects']
     return data
 
 
-
-@register.inclusion_tag('menu/tree_menu.html')
-def draw_menu(menu_name: str):
+@register.inclusion_tag('menu/tree_menu.html', takes_context=True)
+def draw_menu(context, menu_name: str):
     # menu = MenuItem.objects.filter(parent_menu__name=menu_name) \
     #     .select_related('parent_menu_item', 'parent_menu_item__title') \
     #     .values('id', 'title', 'parent_menu_item', 'parent_menu_item__title')
+    print(context)
     menu = MenuItem.objects.filter(parent_menu__name=menu_name)\
         .select_related('parent_menu_item')
-    childs = []
+    children = []
     parents = []
 
     for item in menu:
         if item.parent_menu_item is not None:
-            childs.append(item)
+            children.append(item)
         else:
             parents.append(item)
-    # childs = sorted(childs, key=lambda d: d['parent_menu_item'])
+    # children = sorted(children, key=lambda d: d['parent_menu_item'])
     # parents = sorted(parents, key=lambda d: d['id'])
     result = {
         'current_object': None,
-        'child_objects': []
+        'children_objects': []
     }
     for parent in parents:
-        result['child_objects'].append(rec_func(parent, childs[:]))
-    return {"menu": {"parent": parents, "child": childs, "menu": menu, 'result': result}}
+        result['children_objects'].append(get_full_tree_menu(parent, children[:]))
+    return {"menu": {"parent": parents, "child": children, "menu": menu, 'result': result}}
 
 
 
