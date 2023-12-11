@@ -4,6 +4,7 @@ from .models import MenuItem, Menu
 
 class MenuItemInLine(admin.TabularInline):
     model = MenuItem
+    exclude = ['level']
 
 
 @admin.register(Menu)

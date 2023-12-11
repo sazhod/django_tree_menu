@@ -1,15 +1,14 @@
-{{ menu.menu }}<br><br><br>
-{{ menu.parent }}<br><br><br>
-{{ menu.child }}<br><br><br>
-result = {{ menu.result }}<br><br><br>
+{% load menu_tags %}
 
-{% for data in menu.result.children_objects %}
-    {{ data.current_object.title }}<br><br><br>
-    {{ data.children_objects }}<br><br><br>
 
-{% endfor %}
+<ul class="treeCSS">
+    {% for item in menu %}
 
-group_menu = {{ menu.group_menu }}<br><br><br>
+        {% get_tags_for_current_item item  menu as tags %}
+        {{ tags.tags|safe }}
+        <li><a href="/menu_item/{{ item.url }}">{{ item.level }} {{ item }}</a>
+    {% endfor %}
+</ul>
 
 <style>
 .treeCSS,

@@ -17,7 +17,7 @@ class MenuItem(models.Model):
     parent_menu = models.ForeignKey(Menu, on_delete=models.CASCADE, blank=True, null=True, related_name='menu')
     parent_menu_item = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True,
                                          related_name='menu_item')
-    level = models.IntegerField(default=0)
+    level = models.IntegerField(default=0, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
