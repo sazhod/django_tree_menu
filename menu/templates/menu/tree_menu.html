@@ -6,7 +6,7 @@
 
         {% get_tags_for_current_item item  menu as tags %}
         {{ tags.tags|safe }}
-        <li><a href="/menu_item/{{ item.url }}">{{ item.level }} {{ item }}</a>
+        <li><a href="/menu_item/{{ item.url }}">{{ item }}</a>
     {% endfor %}
 </ul>
 
