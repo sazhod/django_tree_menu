@@ -51,5 +51,4 @@ def draw_menu(context, menu_name: str):
         if sorted_menu_items[i].level > 0 and sorted_menu_items[i] not in include_menu_items:
             sorted_menu_items.pop(i)
 
-    # print(lst, tmp_menu)
     return {"menu":  sorted_menu_items}
